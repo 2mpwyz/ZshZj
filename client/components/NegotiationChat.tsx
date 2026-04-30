@@ -284,9 +284,10 @@ const NegotiationChat: React.FC<NegotiationChatProps> = ({
               category: task.category,
               estimated_time: task.estimated_time,
               payment_terms: task.payment_terms,
-              budget: keyTerms.price,
-              timeline: keyTerms.timeline,
-              negotiation_notes: keyTerms.notes,
+              budget_original: task.budget,        // Original task budget (for reference)
+              budget: keyTerms.price,              // AGREED PRICE ✅
+              timeline: keyTerms.timeline,         // AGREED TIMELINE ✅
+              negotiation_notes: keyTerms.notes,   // AGREED NOTES ✅
             },
           })
           .eq("id", existingTodos[0].id)
@@ -316,9 +317,10 @@ const NegotiationChat: React.FC<NegotiationChatProps> = ({
                 category: task.category,
                 estimated_time: task.estimated_time,
                 payment_terms: task.payment_terms,
-                budget: keyTerms.price,
-                timeline: keyTerms.timeline,
-                negotiation_notes: keyTerms.notes,
+                budget_original: task.budget,        // Original task budget (for reference)
+                budget: keyTerms.price,              // AGREED PRICE ✅
+                timeline: keyTerms.timeline,         // AGREED TIMELINE ✅
+                negotiation_notes: keyTerms.notes,   // AGREED NOTES ✅
               },
               attachments: attachments.length > 0 ? attachments.map((a) => ({
                 id: a.attachmentId,
