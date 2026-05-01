@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Tabs } from "../components/ui/tabs";
+import { Tabs, TabsContent } from "../components/ui/tabs";
 import { supabase, Task as TaskType, Complaint, TaskResponse, TaskProposal, TodoListItem, UserProfile } from "../lib/supabase";
 import { toast } from "../hooks/use-toast";
 import { FileAttachment } from "../components/FileUploadZone";
@@ -545,81 +545,87 @@ const TasksPage: React.FC = () => {
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
           {/* New Task Tab */}
-          <NewTaskTab
-            isLoading={isLoading}
-            complaints={complaints}
-            selectedComplaint={selectedComplaint}
-            complaintAttachments={complaintAttachments}
-            formData={formData}
-            fileAttachments={fileAttachments}
-            isSubmitting={isSubmitting}
-            internalStaff={internalStaff}
-            externalVendors={externalVendors}
-            onSelectComplaint={handleSelectComplaint}
-            onAcceptComplaint={handleAcceptComplaint}
-            onFormChange={handleFormChange}
-            onAddAttachments={(newAttachments) =>
-              setFileAttachments((prev) => [...prev, ...newAttachments])
-            }
-            onRemoveAttachment={(id) =>
-              setFileAttachments((prev) =>
-                prev.filter((att) => att.id !== id)
-              )
-            }
-            onCreateTask={handleCreateTask}
-            onClearSelectedComplaint={() => setSelectedComplaint(null)}
-          />
+          <TabsContent value="new-task" className="space-y-6">
+            <NewTaskTab
+              isLoading={isLoading}
+              complaints={complaints}
+              selectedComplaint={selectedComplaint}
+              complaintAttachments={complaintAttachments}
+              formData={formData}
+              fileAttachments={fileAttachments}
+              isSubmitting={isSubmitting}
+              internalStaff={internalStaff}
+              externalVendors={externalVendors}
+              onSelectComplaint={handleSelectComplaint}
+              onAcceptComplaint={handleAcceptComplaint}
+              onFormChange={handleFormChange}
+              onAddAttachments={(newAttachments) =>
+                setFileAttachments((prev) => [...prev, ...newAttachments])
+              }
+              onRemoveAttachment={(id) =>
+                setFileAttachments((prev) =>
+                  prev.filter((att) => att.id !== id)
+                )
+              }
+              onCreateTask={handleCreateTask}
+              onClearSelectedComplaint={() => setSelectedComplaint(null)}
+            />
+          </TabsContent>
 
           {/* Todo List Tab */}
-          <TodoListTab
-            userRole={userRole}
-            currentUserProfile={currentUserProfile}
-            tasks={tasks}
-            taskResponses={taskResponses}
-            taskProposals={taskProposals}
-            todoItems={todoItems}
-            taskAttachments={taskAttachments}
-            todoAttachments={todoAttachments}
-            searchQuery={searchQuery}
-            filterStatus={filterStatus}
-            onSearchChange={setSearchQuery}
-            onFilterChange={setFilterStatus}
-            onTaskSelect={setSelectedTask}
-            onTabChange={handleTabChange}
-            onProposalUpdated={() => {
-              supabase
-                .from("task_proposals")
-                .select("*")
-                .order("created_at", { ascending: false })
-                .then(({ data }) => setTaskProposals(data || []));
-            }}
-            onTodoUpdated={() => {
-              if (currentUserProfile) {
+          <TabsContent value="todo-list" className="space-y-6">
+            <TodoListTab
+              userRole={userRole}
+              currentUserProfile={currentUserProfile}
+              tasks={tasks}
+              taskResponses={taskResponses}
+              taskProposals={taskProposals}
+              todoItems={todoItems}
+              taskAttachments={taskAttachments}
+              todoAttachments={todoAttachments}
+              searchQuery={searchQuery}
+              filterStatus={filterStatus}
+              onSearchChange={setSearchQuery}
+              onFilterChange={setFilterStatus}
+              onTaskSelect={setSelectedTask}
+              onTabChange={handleTabChange}
+              onProposalUpdated={() => {
                 supabase
-                  .from("todo_list")
+                  .from("task_proposals")
                   .select("*")
-                  .eq("provider_id", currentUserProfile.id)
                   .order("created_at", { ascending: false })
-                  .then(({ data }) => setTodoItems(data || []));
-              }
-            }}
-            onTaskResponseOpen={(task) => {
-              setSelectedTaskForResponse(task);
-              setShowResponseModal(true);
-            }}
-            isSubmitting={isSubmitting}
-          />
+                  .then(({ data }) => setTaskProposals(data || []));
+              }}
+              onTodoUpdated={() => {
+                if (currentUserProfile) {
+                  supabase
+                    .from("todo_list")
+                    .select("*")
+                    .eq("provider_id", currentUserProfile.id)
+                    .order("created_at", { ascending: false })
+                    .then(({ data }) => setTodoItems(data || []));
+                }
+              }}
+              onTaskResponseOpen={(task) => {
+                setSelectedTaskForResponse(task);
+                setShowResponseModal(true);
+              }}
+              isSubmitting={isSubmitting}
+            />
+          </TabsContent>
 
           {/* Live Chat Tab */}
-          <LiveChatTab
-            selectedTask={selectedTask}
-            tasks={tasks}
-            currentUser={currentUser}
-            currentUserProfile={currentUserProfile}
-            userRole={userRole}
-            onTaskSelect={setSelectedTask}
-            onTabChange={handleTabChange}
-          />
+          <TabsContent value="live-chat" className="space-y-6">
+            <LiveChatTab
+              selectedTask={selectedTask}
+              tasks={tasks}
+              currentUser={currentUser}
+              currentUserProfile={currentUserProfile}
+              userRole={userRole}
+              onTaskSelect={setSelectedTask}
+              onTabChange={handleTabChange}
+            />
+          </TabsContent>
         </Tabs>
 
         {/* Task Response Modal */}
